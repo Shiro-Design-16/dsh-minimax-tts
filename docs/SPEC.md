@@ -9,7 +9,7 @@
 DSH 插件，只适配 MiniMax 的 TTS：把对话流里的 assistant 消息朗读出来。
 - 插件目录：本仓库根目录
 - 两半边纯 ESM JavaScript，**无 TS、无构建步骤**
-- 挂载：profile（`$DSH_HOME/profiles/<name>`）的 `package.json` 的 `dependencies` 里加 `"@local/dsh-minimax-tts": "link:<本仓库绝对路径>"`，并在 `dsh.profile.bundles` 里加一条。
+- 挂载：profile（`$DSH_HOME/profiles/<name>`）的 `package.json` 的 `dependencies` 里加 `"dsh-minimax-tts": "link:<本仓库绝对路径>"`，并在 `dsh.profile.bundles` 里加一条。
 
 **v1 不做**：声音克隆、声音设计、双音色 `timbre_weights`、变声 `voice_modify`、音乐与音效、流式合成、字幕落盘、边生成边朗读。
 
@@ -26,7 +26,7 @@ DSH 插件，只适配 MiniMax 的 TTS：把对话流里的 assistant 消息朗�
 
 ```json
 {
-  "name": "@local/dsh-minimax-tts",
+  "name": "dsh-minimax-tts",
   "version": "0.1.0",
   "private": true,
   "description": "MiniMax TTS：朗读对话流里的 assistant 消息（手动模式；灵动模式为 v1.1 预留框架）",
@@ -59,12 +59,15 @@ HTTP 一律用 `fetch` 打本机回环路由）。`slots.inject(name, cb)` 的�
 # dsh-minimax-tts bundle patch: insert the host row into the composition.
 - insert:
     - id: dsh-minimax-tts
-      name: '@local/dsh-minimax-tts'   # 必须逐字等于 package.json 的 name
+      name: 'dsh-minimax-tts'   # 必须逐字等于 package.json 的 name
 ```
 
-> 勘误（2026-10-14）：此处原写 `name: dsh-minimax-tts`，与 `package.json` 的
-> `"name": "@local/dsh-minimax-tts"` 不一致。`link:` 依赖约定下本地插件的包名带
-> `@local/` 前缀，而 bundle 行靠 `name` 解析客户端模块，不一致会让 roster 找不到该行。已按约定改正。
+> 沿革（2026-10-15）：本插件最初以 `@local/dsh-minimax-tts` 的名字挂载。它的目录变成 git 仓库
+> （有了远端）之后，插件管理器按目录名把它重挂成不带 scope 的 `dsh-minimax-tts` —— profile 的
+> `dependencies` 键、`dsh.profile.bundles`、`node_modules/dsh-minimax-tts` 符号链都改成了新名，
+> 而 `package.json` 与 bundle 行还停在旧名上，两边对不上：bundle 行靠 `name` 解析客户端模块，
+> 名字不一致会让 roster 找不到该行、整个插件挂载失败（实测：profile 起不来）。现已把包名、
+> bundle 行名、客户端注册 id 与设置项 key 统一为 `dsh-minimax-tts`。
 
 宿主半边导出（冻结）：
 
@@ -268,17 +271,17 @@ API key 兜底顺序：`config.apiKey` → 环境变量 `MINIMAX_API_KEY` → `~
 - 交给用户的 YAML（daily preset 的 plugins 列表里，与现有行同级）：
   ```yaml
   - id: dsh-minimax-tts-skill
-    name: '@local/dsh-minimax-tts'
+    name: 'dsh-minimax-tts'
     config:
       role: skill-only
   ```
 - **实现待实测项**（实现者必须在证据里回报结论，不得靠猜）：
-  1. preset 行能否解析 `@local/dsh-minimax-tts`（走 profile 的 `node_modules/@local/...` 符号链）；
+  1. preset 行能否解析 `dsh-minimax-tts`（走 profile 的 `node_modules/dsh-minimax-tts` 符号链）；
   2. `ctx.tools.register` 接受裸对象定义还是必须 `defineTool`（优先 `import('@deepseek-ai/dsh-tools')` 取 `defineTool`，解析失败退化为裸对象，以真实注册成功为准）；
   3. 技能 provider 的注册形状（照官方 `@deepseek-ai/dsh-skill-office`：`inject=['skills']` + `ctx.skills.registerProvider(() => provider)`；若 `inject` 多值冲突则改用 `ctx.inject([...], cb)`）。
 
 - **实测结论（2026-10-14，host-v11 带回真实包证据、我复核）**：
-  1. preset 行**能**解析 `@local/dsh-minimax-tts`：`~/.dsh/profiles/desktop/node_modules/@local/dsh-minimax-tts` 是符号链 → 插件目录，profile `package.json:11` 有 `link:` 依赖且 `dsh.profile.bundles` 含它（其余 profile 无此链 → 白名单行只在被链的 profile 生效）。
+  1. preset 行**能**解析 `dsh-minimax-tts`：`~/.dsh/profiles/desktop/node_modules/dsh-minimax-tts` 是符号链 → 插件目录，profile `package.json:11` 有 `link:` 依赖且 `dsh.profile.bundles` 含它（其余 profile 无此链 → 白名单行只在被链的 profile 生效）。
   2. `ctx.tools.register` **接受裸对象定义**：官方只校验 `output.render` 是函数、`output.schema` 合法、`name !== 'run_code'`；`defineTool` 只是 terse → JSON Schema 的糖。实现因此不依赖 `@deepseek-ai/dsh-tools`（宿主半边解析不到它）。
   3. provider 注册走 `ctx.inject(['skills','tools'], cb)` + `skills.registerProvider(() => provider)`；候选与定义已过真实 `SkillRegistry` 的 `validateCandidate` / `validateDefinition`（candidate 需带 `summary`）。
 

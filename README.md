@@ -16,18 +16,18 @@
 profile 是 `$DSH_HOME/profiles/<name>`。三种等价做法：
 
 - 「插件」页里添加本仓库目录（会写成 `link:` 依赖）；
-- 或直接编辑 profile 的 `package.json`，把 `"@local/dsh-minimax-tts": "link:<本仓库绝对路径>"` 加进 `dependencies`；
+- 或直接编辑 profile 的 `package.json`，把 `"dsh-minimax-tts": "link:<本仓库绝对路径>"` 加进 `dependencies`；
 - 再把它加进 **bundle 清单**（`dsh plugin add` 只写依赖，**`dsh.profile.bundles` 才是挂载清单**），
   然后在 profile 目录跑一次包管理安装，最后重启 DSH。
 
 ```json
 {
   "dependencies": {
-    "@local/dsh-minimax-tts": "link:<本仓库绝对路径>"
+    "dsh-minimax-tts": "link:<本仓库绝对路径>"
   },
   "dsh": {
     "profile": {
-      "bundles": ["@local/dsh-minimax-tts"]
+      "bundles": ["dsh-minimax-tts"]
     }
   }
 }
@@ -125,11 +125,11 @@ curl -s -X POST http://127.0.0.1:3080/dsh-minimax-tts/synthesize \
 
   ```yaml
   - id: dsh-minimax-tts-skill
-    name: '@local/dsh-minimax-tts'
+    name: 'dsh-minimax-tts'
     config: { role: skill-only }
   ```
 
-  行里的插件按 profile 的 `node_modules/@local/dsh-minimax-tts` 符号链解析（装好这个插件后就有）。
+  行里的插件按 profile 的 `node_modules/dsh-minimax-tts` 符号链解析（装好这个插件后就有）。
 - 技能正文由插件代码供给（`lib/skill.js`），**不落盘 SKILL.md / `<name>.md`**：指一个目录也绕不过 `scope` 闸门。
   正文按当前配置拼出模型、可用音色与参数区间（emotion / voiceId / speed / vol / pitch / languageBoost）。
 - 正文口径：**可见正文不写朗读标记**（`(laughs)`、`<#0.3#>`、`(chu3)(li3)` 只出现在 `text` 里）；`text` 与正文**词句逐句相同**，

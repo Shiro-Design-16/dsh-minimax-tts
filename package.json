@@ -1,6 +1,6 @@
 {
-  "name": "@local/dsh-minimax-tts",
-  "version": "0.1.0",
+  "name": "dsh-minimax-tts",
+  "version": "0.1.1",
   "description": "DSH 插件：用 MiniMax（海螺）TTS 朗读对话流里的 assistant 消息——手动播放 + 灵动模式（Agent 登记朗读稿）",
   "license": "MIT",
   "repository": {

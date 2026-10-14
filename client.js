@@ -27,7 +27,7 @@
  * 「拿得到就带、拿不到就不带」处理（SPEC §9 第 4 条的降级分支同时保留）。
  */
 window.__ModuleLoader__.load({
-  id: '@local/dsh-minimax-tts',
+  id: 'dsh-minimax-tts',
   factory(require) {
     const React = require('react');
     const h = React.createElement;
@@ -45,7 +45,7 @@ window.__ModuleLoader__.load({
     /** 试听用的默认文本（配置项 `previewText` 的缺省值；宿主半边持有同一句）。 */
     const DEFAULT_PREVIEW_TEXT = '你好，这是一段语音合成测试，听到说明朗读功能已经正常工作了。';
     /** 设置搬进「设置 → 插件」：keyed slot 的 key（SPEC §9）。 */
-    const PLUGIN_PACKAGE = '@local/dsh-minimax-tts';
+    const PLUGIN_PACKAGE = 'dsh-minimax-tts';
     const PLUGIN_ROW_ID = 'dsh-minimax-tts';
     const BUNDLE_KEY = PLUGIN_PACKAGE;
     const ROW_KEY = PLUGIN_PACKAGE + '#' + PLUGIN_ROW_ID;
