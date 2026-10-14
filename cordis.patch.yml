@@ -1,0 +1,4 @@
+# dsh-minimax-tts bundle patch: insert the host row into the composition.
+- insert:
+    - id: dsh-minimax-tts
+      name: '@local/dsh-minimax-tts'

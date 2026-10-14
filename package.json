@@ -1,0 +1,45 @@
+{
+  "name": "@local/dsh-minimax-tts",
+  "version": "0.1.0",
+  "description": "DSH 插件：用 MiniMax（海螺）TTS 朗读对话流里的 assistant 消息——手动播放 + 灵动模式（Agent 登记朗读稿）",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shiro-Design-16/dsh-minimax-tts.git"
+  },
+  "homepage": "https://github.com/Shiro-Design-16/dsh-minimax-tts#readme",
+  "bugs": {
+    "url": "https://github.com/Shiro-Design-16/dsh-minimax-tts/issues"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "minimax",
+    "tts"
+  ],
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-slots"
+      ]
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.2"
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24"
+  }
+}

@@ -1,0 +1,3 @@
+/Users/x/DSH/PLUGINS/dsh-minimax-tts/lib/core.js
+./relative/note.md
+~/notes/todo.txt
